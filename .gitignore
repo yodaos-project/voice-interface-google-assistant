@@ -12,3 +12,8 @@ run_assistant_file
 run_assistant_text
 # Generated files
 src/embedded_assistant*
+
+*.tar*
+/gcc*
+/sysroot*
+/staging_dir
