@@ -19,6 +19,10 @@ limitations under the License.
 
 #include <string>
 
+#ifdef __APPLE__
+#define u_char char
+#endif
+
 std::string base64_encode(const std::string&);
 
 #endif  // SRC_ASSISTANT_BASE64_ENCODE_H_

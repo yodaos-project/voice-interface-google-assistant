@@ -51,19 +51,24 @@ ALSA_CFLAGS ?=
 ALSA_LDFLAGS ?=
 endif
 
+FLORA_CFLAGS ?= "-I/usr/local/include -I/usr/local/include/caps"
+FLORA_LDFLAGS ?= "-L/usr/local/lib -lflora-cli -lcaps -lmisc -lrlog"
+
 CPPFLAGS += -I$(GOOGLEAPIS_GENS_PATH) \
             -I$(GRPC_SRC_PATH) \
             -I./src
 
-CXXFLAGS += -std=c++11 $(GRPC_GRPCPP_CFLAGS)
+CXXFLAGS += -std=c++11 $(GRPC_GRPCPP_CFLAGS) $(FLORA_CFLAGS)
 
 # grpc_cronet is for JSON functions in gRPC library.
 ifeq ($(SYSTEM),Darwin)
 LDFLAGS += $(GRPC_GRPCPP_LDLAGS) \
+					 $(FLORA_LDFLAGS) \
            -lgrpc++_reflection -lgrpc_cronet \
            -lprotobuf -lpthread -ldl
 else
 LDFLAGS += $(GRPC_GRPCPP_LDLAGS) \
+					 $(FLORA_LDFLAGS) \
            -lgrpc_cronet -Wl,--no-as-needed -lgrpc++_reflection \
            -Wl,--as-needed -lprotobuf -lpthread -ldl
 endif
@@ -80,13 +85,15 @@ AUDIO_INPUT_FILE_SRCS = ./src/assistant/audio_input_file.cc
 ASSISTANT_AUDIO_SRCS = ./src/assistant/run_assistant_audio.cc
 ASSISTANT_FILE_SRCS = ./src/assistant/run_assistant_file.cc
 ASSISTANT_TEXT_SRCS = ./src/assistant/run_assistant_text.cc
+ASSISTANT_FLORA_SRCS = ./src/assistant/run_assistant_flora.cc ./src/assistant/audio_output_flora.cc
 
 ASSISTANT_O       = $(CORE_SRCS:.cc=.o) \
                     $(AUDIO_SRCS:.cc=.o) \
                     $(AUDIO_INPUT_FILE_SRCS:.cc=.o) \
                     $(ASSISTANT_AUDIO_SRCS:.cc=.o) \
                     $(ASSISTANT_FILE_SRCS:.cc=.o) \
-                    $(ASSISTANT_TEXT_SRCS:.cc=.o)
+                    $(ASSISTANT_TEXT_SRCS:.cc=.o) \
+                    $(ASSISTANT_FLORA_SRCS:.cc=.o)
 ASSISTANT_AUDIO_O = $(CORE_SRCS:.cc=.o) \
                     $(AUDIO_SRCS:.cc=.o) \
                     $(AUDIO_INPUT_FILE_SRCS:.cc=.o) \
@@ -96,6 +103,8 @@ ASSISTANT_FILE_O  = $(CORE_SRCS:.cc=.o) \
                     $(ASSISTANT_FILE_SRCS:.cc=.o)
 ASSISTANT_TEXT_O  = $(CORE_SRCS:.cc=.o) \
                     $(ASSISTANT_TEXT_SRCS:.cc=.o)
+ASSISTANT_FLORA_O = $(CORE_SRCS:.cc=.o) \
+                    $(ASSISTANT_FLORA_SRCS:.cc=.o)
 
 .PHONY: all
 all: run_assistant
@@ -116,6 +125,10 @@ run_assistant_file: $(GOOGLEAPIS_ASSISTANT_CCS:.cc=.o) googleapis.ar \
 
 run_assistant_text: $(GOOGLEAPIS_ASSISTANT_CCS:.cc=.o) googleapis.ar \
 	$(ASSISTANT_TEXT_O)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+run_assistant_flora: $(GOOGLEAPIS_ASSISTANT_CCS:.cc=.o) googleapis.ar \
+	$(ASSISTANT_FLORA_O)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 json_util_test: ./src/assistant/json_util.o ./src/assistant/json_util_test.o
