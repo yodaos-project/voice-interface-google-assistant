@@ -5,6 +5,7 @@ src/assistant/*.o
 client_secret_*.json
 client_secret.json
 credentials.json
+creds.data
 # Do not commit binaries
 googleapis.ar
 run_assistant_audio

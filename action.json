@@ -1,0 +1,86 @@
+{
+  "manifest": {
+      "displayName": "Bluetooth",
+      "invocationName": "Open Bluetooth",
+      "category": "PRODUCTIVITY"
+  },
+  "actions": [
+      {
+          "name": "com.example.actions.Open-Bluetooth",
+          "availability": {
+              "deviceClasses": [
+                  {
+                      "assistantSdkDevice": {}
+                  }
+              ]
+          },
+          "intent": {
+              "name": "com.example.intents.Open-Bluetooth",
+              "parameters": [],
+              "trigger": {
+                  "queryPatterns": [
+                      "open bluetooth"
+                  ]
+              }
+          },
+          "fulfillment": {
+              "staticFulfillment": {
+                  "templatedResponse": {
+                      "items": [
+                          {
+                              "simpleResponse": {
+                                  "textToSpeech": "Opening bluetooth for you"
+                              }
+                          },
+                          {
+                              "deviceExecution": {
+                                  "command": "com.example.commands.Open-Bluetooth",
+                                  "params": {}
+                              }
+                          }
+                      ]
+                  }
+              }
+          }
+      },
+      {
+        "name": "com.example.actions.Close-Bluetooth",
+        "availability": {
+            "deviceClasses": [
+                {
+                    "assistantSdkDevice": {}
+                }
+            ]
+        },
+        "intent": {
+            "name": "com.example.intents.Close-Bluetooth",
+            "parameters": [],
+            "trigger": {
+                "queryPatterns": [
+                    "close bluetooth"
+                ]
+            }
+        },
+        "fulfillment": {
+            "staticFulfillment": {
+                "templatedResponse": {
+                    "items": [
+                        {
+                            "simpleResponse": {
+                                "textToSpeech": "Closing bluetooth"
+                            }
+                        },
+                        {
+                            "deviceExecution": {
+                                "command": "com.example.commands.Close-Bluetooth",
+                                "params": {}
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+  ],
+  "types": []
+}

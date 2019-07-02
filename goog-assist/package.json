@@ -1,0 +1,8 @@
+{
+  "name": "goog-assist",
+  "manifest": {
+    "hosts": [
+      "goog-assist"
+    ]
+  }
+}

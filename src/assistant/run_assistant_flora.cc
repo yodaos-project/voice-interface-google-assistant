@@ -169,6 +169,7 @@ int main(int argc, char** argv) {
 
   std::shared_ptr<ClientReaderWriter<AssistRequest, AssistResponse>> gstream;
   AssistRequest* greq;
+  bool voiceStarted = false;
   int32_t turenId;
 
   std::mutex m;
@@ -179,6 +180,7 @@ int main(int argc, char** argv) {
       cv.wait(lk);
 
       AssistRequest request;
+      greq = &request;
       auto* assist_config = request.mutable_config();
 
       if (verbose) {
@@ -223,7 +225,6 @@ int main(int argc, char** argv) {
       }
       stream->Write(request);
 
-      greq = &request;
       gstream = stream;
 
       // Read responses.
@@ -240,9 +241,12 @@ int main(int argc, char** argv) {
         if (response.has_audio_out() ||
             response.event_type() == AssistResponse_EventType_END_OF_UTTERANCE) {
           // Synchronously stops audio input if there is one.
-          auto msg = Caps::new_instance();
-          msg->write(turenId);
-          floraAgent->post("rokid.speech.completed", msg);
+          if (voiceStarted) {
+            auto msg = Caps::new_instance();
+            msg->write(turenId);
+            floraAgent->post("rokid.speech.completed", msg);
+          }
+          voiceStarted = false;
         }
         if (response.has_audio_out()) {
           if (!started)
@@ -259,6 +263,18 @@ int main(int argc, char** argv) {
                       << result.transcript() << " ("
                       << std::to_string(result.stability()) << ")" << std::endl;
           }
+        }
+        if (response.device_action().device_request_json().size() > 0) {
+          std::clog << "assistant_sdk device request:" << std::endl;
+          std::cout << response.device_action().device_request_json()
+                    << std::endl;
+          std::shared_ptr<Caps> url_msg = Caps::new_instance();
+          url_msg->write("yoda-app://goog-assist/handle-command");
+          std::shared_ptr<Caps> param_msg = Caps::new_instance();
+          param_msg->write("request");
+          param_msg->write(response.device_action().device_request_json());
+          url_msg->write(param_msg);
+          floraAgent->call("yodaos.runtime.open-url-format", url_msg, "runtime", [](int32_t, flora::Response&) {});
         }
         if (response.dialog_state_out().supplemental_display_text().size() > 0) {
           // CUSTOMIZE: render spoken response on screen
@@ -282,9 +298,12 @@ int main(int argc, char** argv) {
     }
   });
 
+  std::vector<std::vector<uint8_t>> buffer;
   floraAgent->subscribe("rokid.turen.start_voice",
     [&](const char*, std::shared_ptr<Caps>& msg, uint32_t) {
       std::clog << "start voice" << std::endl;
+      voiceStarted = true;
+      buffer.clear();
       cv.notify_one();
     });
 
@@ -299,10 +318,19 @@ int main(int argc, char** argv) {
       if (greq == nullptr) {
         return -1;
       }
+      buffer.push_back(data);
+
       if (gstream == nullptr) {
         return -1;
       }
       auto request = *greq;
+      if (!buffer.empty()) {
+        for (auto& buf : buffer) {
+          request.set_audio_in((void*)&(buf[0]), buf.size());
+          gstream->Write(request);
+        }
+        buffer.clear();
+      }
       request.set_audio_in((void*)&(data[0]), data.size());
       gstream->Write(request);
 
