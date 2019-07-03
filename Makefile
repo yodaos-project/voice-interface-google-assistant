@@ -113,7 +113,7 @@ googleapis.ar: $(GOOGLEAPIS_CCS:.cc=.o)
 	$(AR) r $@ $?
 
 .PHONY: run_assistant
-run_assistant: run_assistant_audio run_assistant_file run_assistant_text
+run_assistant: run_assistant_audio run_assistant_file run_assistant_text run_assistant_flora
 
 run_assistant_audio: $(GOOGLEAPIS_ASSISTANT_CCS:.cc=.o) googleapis.ar \
 	$(ASSISTANT_AUDIO_O)
