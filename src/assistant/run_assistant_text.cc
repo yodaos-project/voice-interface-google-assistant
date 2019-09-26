@@ -229,6 +229,11 @@ int main(int argc, char** argv) {
                 html_out_base64 + "\"")
                    .c_str());
       } else if (html_out_command.empty()) {
+        if (response.device_action().device_request_json().size() > 0) {
+          std::clog << "assistant_sdk device request:" << std::endl;
+          std::cout << response.device_action().device_request_json()
+                    << std::endl;
+        }
         if (response.dialog_state_out().supplemental_display_text().size() >
             0) {
           // CUSTOMIZE: render spoken response on screen
