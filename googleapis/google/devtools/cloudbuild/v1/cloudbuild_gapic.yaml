@@ -7,7 +7,7 @@ language_settings:
   python:
     package_name: google.cloud.devtools.cloudbuild_v1.gapic
   go:
-    package_name: cloud.google.com/go/cloudbuild/apiv1
+    package_name: cloud.google.com/go/devtools/cloudbuild/apiv1
   csharp:
     package_name: Google.Devtools.Cloudbuild.V1
   ruby:
@@ -16,7 +16,12 @@ language_settings:
     package_name: Google\Cloud\Devtools\Cloudbuild\V1
   nodejs:
     package_name: cloudbuild.v1
-    domain_layer_location: google-cloud
+# The configuration for the license header to put on generated files.
+license_header:
+  # The file containing the copyright line(s).
+  copyright_file: copyright-google.txt
+  # The file containing the raw license header without any copyright line(s).
+  license_file: license-header-apache-2.0.txt
 # A list of API interface configurations.
 interfaces:
   # The fully qualified name of the API interface.
@@ -63,7 +68,9 @@ interfaces:
   #       message.
   #   required_fields - Fields that are always required for a request to be
   #       valid.
-  #
+  #   request_object_method - Turns on or off the generation of a method whose
+  #       sole parameter is a request object. Not all languages will generate
+  #       this method.
   #   resource_name_treatment - An enum that specifies how to treat the
   #       resource name formats defined in the field_name_patterns
   #       and response_field_name_patterns fields.
@@ -108,6 +115,7 @@ interfaces:
     required_fields:
     - project_id
     - build
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -120,6 +128,7 @@ interfaces:
     required_fields:
     - project_id
     - id
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -131,6 +140,7 @@ interfaces:
         - filter
     required_fields:
     - project_id
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
@@ -150,6 +160,7 @@ interfaces:
     required_fields:
     - project_id
     - id
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -162,6 +173,7 @@ interfaces:
     required_fields:
     - project_id
     - trigger
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -174,6 +186,7 @@ interfaces:
     required_fields:
     - project_id
     - trigger_id
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -184,6 +197,7 @@ interfaces:
         - project_id
     required_fields:
     - project_id
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -196,6 +210,7 @@ interfaces:
     required_fields:
     - project_id
     - trigger_id
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -210,6 +225,7 @@ interfaces:
     - project_id
     - trigger_id
     - trigger
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -224,6 +240,7 @@ interfaces:
     - project_id
     - trigger_id
     - source
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -236,6 +253,7 @@ interfaces:
     required_fields:
     - project_id
     - id
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000

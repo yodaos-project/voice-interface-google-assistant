@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC.
+// Copyright 2018 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import "google/rpc/status.proto";
 import "google/type/date.proto";
 import "google/type/dayofweek.proto";
 import "google/type/timeofday.proto";
-import "google/api/client.proto";
 
 option csharp_namespace = "Google.Cloud.Dlp.V2";
 option go_package = "google.golang.org/genproto/googleapis/privacy/dlp/v2;dlp";
@@ -35,6 +34,7 @@ option java_multiple_files = true;
 option java_outer_classname = "DlpProto";
 option java_package = "com.google.privacy.dlp.v2";
 option php_namespace = "Google\\Cloud\\Dlp\\V2";
+
 
 // The Cloud Data Loss Prevention (DLP) API is a service that allows clients
 // to detect the presence of Personally Identifiable Information (PII) and other
@@ -46,9 +46,6 @@ option php_namespace = "Google\\Cloud\\Dlp\\V2";
 // To learn more about concepts and find how-to guides see
 // https://cloud.google.com/dlp/docs/.
 service DlpService {
-  option (google.api.default_host) = "dlp.googleapis.com";
-  option (google.api.oauth_scopes) = "https://www.googleapis.com/auth/cloud-platform";
-
   // Finds potentially sensitive info in content.
   // This method has limits on input size, processing time, and output size.
   //
@@ -283,15 +280,6 @@ service DlpService {
     };
   }
 
-  // Activate a job trigger. Causes the immediate execute of a trigger
-  // instead of waiting on the trigger event to occur.
-  rpc ActivateJobTrigger(ActivateJobTriggerRequest) returns (DlpJob) {
-    option (google.api.http) = {
-      post: "/v2/{name=projects/*/jobTriggers/*}:activate"
-      body: "*"
-    };
-  }
-
   // Creates a new job to inspect storage or calculate risk metrics.
   // See https://cloud.google.com/dlp/docs/inspecting-storage and
   // https://cloud.google.com/dlp/docs/compute-risk-analysis to learn more.
@@ -426,18 +414,6 @@ message ExcludeInfoTypes {
   repeated InfoType info_types = 1;
 }
 
-// Options describing which parts of the provided content should be scanned.
-enum ContentOption {
-  // Includes entire content of a file or a data stream.
-  CONTENT_UNSPECIFIED = 0;
-
-  // Text content within the data, excluding any metadata.
-  CONTENT_TEXT = 1;
-
-  // Images found in the data.
-  CONTENT_IMAGE = 2;
-}
-
 // The rule that specifies conditions when findings of infoTypes specified in
 // `InspectionRuleSet` are removed from results.
 message ExclusionRule {
@@ -498,12 +474,12 @@ message InspectConfig {
 
     // Max number of findings that will be returned for each item scanned.
     // When set within `InspectDataSourceRequest`,
-    // the maximum returned is 2000 regardless if this is set higher.
+    // the maximum returned is 1000 regardless if this is set higher.
     // When set within `InspectContentRequest`, this field is ignored.
     int32 max_findings_per_item = 1;
 
     // Max number of findings that will be returned per request/job.
-    // When set within `InspectContentRequest`, the maximum returned is 2000
+    // When set within `InspectContentRequest`, the maximum returned is 1000
     // regardless if this is set higher.
     int32 max_findings_per_request = 2;
 
@@ -569,8 +545,6 @@ message ByteContentItem {
     IMAGE_SVG = 4;
 
     TEXT_UTF8 = 5;
-
-    AVRO = 11;
   }
 
   // The type of data stored in the bytes string. Default will be TEXT_UTF8.
@@ -669,35 +643,6 @@ message Location {
   // List of nested objects pointing to the precise location of the finding
   // within the file or record.
   repeated ContentLocation content_locations = 7;
-}
-
-// Type of the match which can be applied to different ways of matching, like
-// Dictionary, regular expression and intersecting with findings of another
-// info type.
-enum MatchingType {
-  // Invalid.
-  MATCHING_TYPE_UNSPECIFIED = 0;
-
-  // Full match.
-  //
-  // - Dictionary: join of Dictionary results matched complete finding quote
-  // - Regex: all regex matches fill a finding quote start to end
-  // - Exclude info type: completely inside affecting info types findings
-  MATCHING_TYPE_FULL_MATCH = 1;
-
-  // Partial match.
-  //
-  // - Dictionary: at least one of the tokens in the finding matches
-  // - Regex: substring of the finding matches
-  // - Exclude info type: intersects with affecting info types findings
-  MATCHING_TYPE_PARTIAL_MATCH = 2;
-
-  // Inverse match.
-  //
-  // - Dictionary: no tokens in the finding match the dictionary
-  // - Regex: finding doesn't match the regex
-  // - Exclude info type: no intersection with affecting info types findings
-  MATCHING_TYPE_INVERSE_MATCH = 3;
 }
 
 // Findings container location data.
@@ -1045,7 +990,6 @@ message InspectDataSourceDetails {
     InspectJobConfig job_config = 3;
   }
 
-  // All result fields mentioned below are updated while the job is processing.
   message Result {
     // Total size in bytes that were processed.
     int64 processed_bytes = 1;
@@ -1075,10 +1019,6 @@ message InfoTypeDescription {
 
   // Which parts of the API supports this InfoType.
   repeated InfoTypeSupportedBy supported_by = 3;
-
-  // Description of the infotype. Translated when language is provided in the
-  // request.
-  string description = 4;
 }
 
 // Request for the list of infoTypes.
@@ -1678,8 +1618,6 @@ message PrimitiveTransformation {
     CryptoHashConfig crypto_hash_config = 9;
 
     DateShiftConfig date_shift_config = 11;
-
-    CryptoDeterministicConfig crypto_deterministic_config = 12;
   }
 }
 
@@ -1714,70 +1652,12 @@ message TimePartConfig {
 // Pseudonymization method that generates surrogates via cryptographic hashing.
 // Uses SHA-256.
 // The key size must be either 32 or 64 bytes.
-// Outputs a base64 encoded representation of the hashed output
-// (for example, L7k0BHmF1ha5U3NfGykjro4xWi1MPVQPjhMAZbSV9mM=).
+// Outputs a 32 byte digest as an uppercase hex string
+// (for example, 41D1567F7F99F1DC2A5FAB886DEE5BEE).
 // Currently, only string and integer values can be hashed.
-// See https://cloud.google.com/dlp/docs/pseudonymization to learn more.
 message CryptoHashConfig {
   // The key used by the hash function.
   CryptoKey crypto_key = 1;
-}
-
-// Pseudonymization method that generates deterministic encryption for the given
-// input. Outputs a base64 encoded representation of the encrypted output.
-// Uses AES-SIV based on the RFC https://tools.ietf.org/html/rfc5297.
-message CryptoDeterministicConfig {
-  // The key used by the encryption function.
-  CryptoKey crypto_key = 1;
-
-  // The custom info type to annotate the surrogate with.
-  // This annotation will be applied to the surrogate by prefixing it with
-  // the name of the custom info type followed by the number of
-  // characters comprising the surrogate. The following scheme defines the
-  // format: <info type name>(<surrogate character count>):<surrogate>
-  //
-  // For example, if the name of custom info type is 'MY_TOKEN_INFO_TYPE' and
-  // the surrogate is 'abc', the full replacement value
-  // will be: 'MY_TOKEN_INFO_TYPE(3):abc'
-  //
-  // This annotation identifies the surrogate when inspecting content using the
-  // custom info type 'Surrogate'. This facilitates reversal of the
-  // surrogate when it occurs in free text.
-  //
-  // In order for inspection to work properly, the name of this info type must
-  // not occur naturally anywhere in your data; otherwise, inspection may either
-  //
-  // - reverse a surrogate that does not correspond to an actual identifier
-  // - be unable to parse the surrogate and result in an error
-  //
-  // Therefore, choose your custom info type name carefully after considering
-  // what your data looks like. One way to select a name that has a high chance
-  // of yielding reliable detection is to include one or more unicode characters
-  // that are highly improbable to exist in your data.
-  // For example, assuming your data is entered from a regular ASCII keyboard,
-  // the symbol with the hex code point 29DD might be used like so:
-  // ⧝MY_TOKEN_TYPE
-  InfoType surrogate_info_type = 2;
-
-  // Optional. A context may be used for higher security and maintaining
-  // referential integrity such that the same identifier in two different
-  // contexts will be given a distinct surrogate. The context is appended to
-  // plaintext value being encrypted. On decryption the provided context is
-  // validated against the value used during encryption. If a context was
-  // provided during encryption, same context must be provided during decryption
-  // as well.
-  //
-  // If the context is not set, plaintext would be used as is for encryption.
-  // If the context is set but:
-  //
-  // 1. there is no record present when transforming a given value or
-  // 2. the field is not present when transforming a given value,
-  //
-  // plaintext would be used as is for encryption.
-  //
-  // Note that case (1) is expected when an `InfoTypeTransformation` is
-  // applied to both structured and non-structured `ContentItem`s.
-  FieldId context = 3;
 }
 
 // Replace each input value with a given `Value`.
@@ -1920,19 +1800,16 @@ message BucketingConfig {
   repeated Bucket buckets = 1;
 }
 
-// Replaces an identifier with a surrogate using Format Preserving Encryption
-// (FPE) with the FFX mode of operation; however when used in the
-// `ReidentifyContent` API method, it serves the opposite function by reversing
-// the surrogate back into the original identifier. The identifier must be
-// encoded as ASCII. For a given crypto key and context, the same identifier
-// will be replaced with the same surrogate. Identifiers must be at least two
-// characters long. In the case that the identifier is the empty string, it will
-// be skipped. See https://cloud.google.com/dlp/docs/pseudonymization to learn
-// more.
-//
-// Note: We recommend using  CryptoDeterministicConfig for all use cases which
-// do not require preserving the input alphabet space and size, plus warrant
-// referential integrity.
+// Replaces an identifier with a surrogate using FPE with the FFX
+// mode of operation; however when used in the `ReidentifyContent` API method,
+// it serves the opposite function by reversing the surrogate back into
+// the original identifier.
+// The identifier must be encoded as ASCII.
+// For a given crypto key and context, the same identifier will be
+// replaced with the same surrogate.
+// Identifiers must be at least two characters long.
+// In the case that the identifier is the empty string, it will be skipped.
+// See https://cloud.google.com/dlp/docs/pseudonymization to learn more.
 message CryptoReplaceFfxFpeConfig {
   // These are commonly used subsets of the alphabet that the FFX mode
   // natively supports. In the algorithm, the alphabet is selected using
@@ -2049,26 +1926,14 @@ message TransientCryptoKey {
   string name = 1;
 }
 
-// Parts of the APIs which use certain infoTypes.
-enum InfoTypeSupportedBy {
-  ENUM_TYPE_UNSPECIFIED = 0;
-
-  // Supported by the inspect operations.
-  INSPECT = 1;
-
-  // Supported by the risk analysis operations.
-  RISK_ANALYSIS = 2;
-}
-
 // Using raw keys is prone to security risks due to accidentally
 // leaking the key. Choose another type of key if possible.
 message UnwrappedCryptoKey {
-  // A 128/192/256 bit key. [required]
+  // The AES 128/192/256 bit key. [required]
   bytes key = 1;
 }
 
 // Include to use an existing data crypto key wrapped by KMS.
-// The wrapped key must be a 128/192/256 bit key.
 // Authorization requires the following IAM permissions when sending a request
 // to perform a crypto transformation using a kms-wrapped crypto key:
 // dlp.kms.encrypt
@@ -2183,8 +2048,7 @@ message RecordSuppression {
 message RecordCondition {
   // The field type of `value` and `field` do not need to match to be
   // considered equal, but not all comparisons are possible.
-  // EQUAL_TO and NOT_EQUAL_TO attempt to compare even with incompatible types,
-  // but all other comparisons are invalid with incompatible types.
+  //
   // A `value` of type:
   //
   // - `string` can be compared against all other types
@@ -2246,7 +2110,7 @@ message TransformationOverview {
   repeated TransformationSummary transformation_summaries = 3;
 }
 
-// Summary of a single transformation.
+// Summary of a single tranformation.
 // Only one of 'transformation', 'field_transformation', or 'record_suppress'
 // will be set.
 message TransformationSummary {
@@ -2271,7 +2135,7 @@ message TransformationSummary {
     ERROR = 2;
   }
 
-  // Set if the transformation was limited to a specific InfoType.
+  // Set if the transformation was limited to a specific info_type.
   InfoType info_type = 1;
 
   // Set if the transformation was limited to a specific FieldId.
@@ -2452,10 +2316,7 @@ message Action {
     OutputStorageConfig output_config = 1;
   }
 
-  // Publish a message into given Pub/Sub topic when DlpJob has completed. The
-  // message contains a single field, `DlpJobName`, which is equal to the
-  // finished job's
-  // [`DlpJob.name`](/dlp/docs/reference/rest/v2/projects.dlpJobs#DlpJob).
+  // Publish the results of a DlpJob to a pub sub channel.
   // Compatible with: Inspect, Risk
   message PublishToPubSub {
     // Cloud Pub/Sub topic to send notifications to. The topic must have given
@@ -2479,26 +2340,6 @@ message Action {
 
   }
 
-  // Publish findings of a DlpJob to Cloud Data Catalog. Labels summarizing the
-  // results of the DlpJob will be applied to the entry for the resource scanned
-  // in Cloud Data Catalog. Any labels previously written by another DlpJob will
-  // be deleted. InfoType naming patterns are strictly enforced when using this
-  // feature. Note that the findings will be persisted in Cloud Data Catalog
-  // storage and are governed by Data Catalog service-specific policy, see
-  // https://cloud.google.com/terms/service-terms
-  // Only a single instance of this action can be specified and only allowed if
-  // all resources being scanned are BigQuery tables.
-  // Compatible with: Inspect
-  message PublishFindingsToCloudDataCatalog {
-
-  }
-
-  // Enable email notification to project owners and editors on jobs's
-  // completion/failure.
-  message JobNotificationEmails {
-
-  }
-
   oneof action {
     // Save resulting findings in a provided location.
     SaveFindings save_findings = 1;
@@ -2508,13 +2349,6 @@ message Action {
 
     // Publish summary to Cloud Security Command Center (Alpha).
     PublishSummaryToCscc publish_summary_to_cscc = 3;
-
-    // Publish findings to Cloud Datahub.
-    PublishFindingsToCloudDataCatalog publish_findings_to_cloud_data_catalog = 5;
-
-    // Enable email notification to project owners and editors on job's
-    // completion/failure.
-    JobNotificationEmails job_notification_emails = 8;
   }
 }
 
@@ -2529,7 +2363,7 @@ message CreateInspectTemplateRequest {
 
   // The template id can contain uppercase and lowercase letters,
   // numbers, and hyphens; that is, it must match the regular
-  // expression: `[a-zA-Z\\d-_]+`. The maximum length is 100
+  // expression: `[a-zA-Z\\d-]+`. The maximum length is 100
   // characters. Can be empty to allow the system to generate one.
   string template_id = 3;
 }
@@ -2614,16 +2448,9 @@ message CreateJobTriggerRequest {
 
   // The trigger id can contain uppercase and lowercase letters,
   // numbers, and hyphens; that is, it must match the regular
-  // expression: `[a-zA-Z\\d-_]+`. The maximum length is 100
+  // expression: `[a-zA-Z\\d-]+`. The maximum length is 100
   // characters. Can be empty to allow the system to generate one.
   string trigger_id = 3;
-}
-
-// Request message for ActivateJobTrigger.
-message ActivateJobTriggerRequest {
-  // Resource name of the trigger to activate, for example
-  // `projects/dlp-test-project/jobTriggers/53234423`.
-  string name = 1;
 }
 
 // Request message for UpdateJobTrigger.
@@ -2662,7 +2489,7 @@ message CreateDlpJobRequest {
 
   // The job id can contain uppercase and lowercase letters,
   // numbers, and hyphens; that is, it must match the regular
-  // expression: `[a-zA-Z\\d-_]+`. The maximum length is 100
+  // expression: `[a-zA-Z\\d-]+`. The maximum length is 100
   // characters. Can be empty to allow the system to generate one.
   string job_id = 4;
 }
@@ -2691,37 +2518,10 @@ message ListJobTriggersRequest {
   //
   // - `create_time`: corresponds to time the JobTrigger was created.
   // - `update_time`: corresponds to time the JobTrigger was last updated.
-  // - `last_run_time`: corresponds to the last time the JobTrigger ran.
   // - `name`: corresponds to JobTrigger's name.
   // - `display_name`: corresponds to JobTrigger's display name.
   // - `status`: corresponds to JobTrigger's status.
   string order_by = 4;
-
-  // Optional. Allows filtering.
-  //
-  // Supported syntax:
-  //
-  // * Filter expressions are made up of one or more restrictions.
-  // * Restrictions can be combined by `AND` or `OR` logical operators. A
-  // sequence of restrictions implicitly uses `AND`.
-  // * A restriction has the form of `<field> <operator> <value>`.
-  // * Supported fields/values for inspect jobs:
-  //     - `status` - HEALTHY|PAUSED|CANCELLED
-  //     - `inspected_storage` - DATASTORE|CLOUD_STORAGE|BIGQUERY
-  //     - 'last_run_time` - RFC 3339 formatted timestamp, surrounded by
-  //     quotation marks. Nanoseconds are ignored.
-  //     - 'error_count' - Number of errors that have occurred while running.
-  // * The operator must be `=` or `!=` for status and inspected_storage.
-  //
-  // Examples:
-  //
-  // * inspected_storage = cloud_storage AND status = HEALTHY
-  // * inspected_storage = cloud_storage OR inspected_storage = bigquery
-  // * inspected_storage = cloud_storage AND (state = PAUSED OR state = HEALTHY)
-  // * last_run_time > \"2017-12-12T00:00:00+00:00\"
-  //
-  // The length of this field should be no more than 500 characters.
-  string filter = 5;
 }
 
 // Response message for ListJobTriggers.
@@ -2753,7 +2553,8 @@ message InspectJobConfig {
   // template.
   string inspect_template_name = 3;
 
-  // Actions to execute at the completion of the job.
+  // Actions to execute at the completion of the job. Are executed in the order
+  // provided.
   repeated Action actions = 4;
 }
 
@@ -2812,32 +2613,6 @@ message DlpJob {
   repeated Error errors = 11;
 }
 
-// Operators available for comparing the value of fields.
-enum RelationalOperator {
-  RELATIONAL_OPERATOR_UNSPECIFIED = 0;
-
-  // Equal. Attempts to match even with incompatible types.
-  EQUAL_TO = 1;
-
-  // Not equal to. Attempts to match even with incompatible types.
-  NOT_EQUAL_TO = 2;
-
-  // Greater than.
-  GREATER_THAN = 3;
-
-  // Less than.
-  LESS_THAN = 4;
-
-  // Greater than or equals.
-  GREATER_THAN_OR_EQUALS = 5;
-
-  // Less than or equals.
-  LESS_THAN_OR_EQUALS = 6;
-
-  // Exists
-  EXISTS = 7;
-}
-
 // The request message for [DlpJobs.GetDlpJob][].
 message GetDlpJobRequest {
   // The name of the DlpJob resource.
@@ -2861,12 +2636,8 @@ message ListDlpJobsRequest {
   //     - `state` - PENDING|RUNNING|CANCELED|FINISHED|FAILED
   //     - `inspected_storage` - DATASTORE|CLOUD_STORAGE|BIGQUERY
   //     - `trigger_name` - The resource name of the trigger that created job.
-  //     - 'end_time` - Corresponds to time the job finished.
-  //     - 'start_time` - Corresponds to time the job finished.
   // * Supported fields for risk analysis jobs:
   //     - `state` - RUNNING|CANCELED|FINISHED|FAILED
-  //     - 'end_time` - Corresponds to time the job finished.
-  //     - 'start_time` - Corresponds to time the job finished.
   // * The operator must be `=` or `!=`.
   //
   // Examples:
@@ -2874,7 +2645,6 @@ message ListDlpJobsRequest {
   // * inspected_storage = cloud_storage AND state = done
   // * inspected_storage = cloud_storage OR inspected_storage = bigquery
   // * inspected_storage = cloud_storage AND (state = done OR state = canceled)
-  // * end_time > \"2017-12-12T00:00:00+00:00\"
   //
   // The length of this field should be no more than 500 characters.
   string filter = 1;
@@ -2936,7 +2706,7 @@ message CreateDeidentifyTemplateRequest {
 
   // The template id can contain uppercase and lowercase letters,
   // numbers, and hyphens; that is, it must match the regular
-  // expression: `[a-zA-Z\\d-_]+`. The maximum length is 100
+  // expression: `[a-zA-Z\\d-]+`. The maximum length is 100
   // characters. Can be empty to allow the system to generate one.
   string template_id = 3;
 }
@@ -3034,12 +2804,6 @@ message LargeCustomDictionaryConfig {
   }
 }
 
-// Summary statistics of a custom dictionary.
-message LargeCustomDictionaryStats {
-  // Approximate number of distinct phrases in the dictionary.
-  int64 approx_num_phrases = 1;
-}
-
 // Configuration for a StoredInfoType.
 message StoredInfoTypeConfig {
   // Display name of the StoredInfoType (max 256 characters).
@@ -3051,14 +2815,6 @@ message StoredInfoTypeConfig {
   oneof type {
     // StoredInfoType where findings are defined by a dictionary of phrases.
     LargeCustomDictionaryConfig large_custom_dictionary = 3;
-  }
-}
-
-// Statistics for a StoredInfoType.
-message StoredInfoTypeStats {
-  oneof type {
-    // StoredInfoType where findings are defined by a dictionary of phrases.
-    LargeCustomDictionaryStats large_custom_dictionary = 1;
   }
 }
 
@@ -3088,9 +2844,6 @@ message StoredInfoTypeVersion {
   // storedInfoType to continue using it, reusing the same `config` if it was
   // not the source of the error.
   repeated Error errors = 4;
-
-  // Statistics about this storedInfoType version.
-  StoredInfoTypeStats stats = 5;
 }
 
 // StoredInfoType resource message that contains information about the current
@@ -3118,7 +2871,7 @@ message CreateStoredInfoTypeRequest {
 
   // The storedInfoType ID can contain uppercase and lowercase letters,
   // numbers, and hyphens; that is, it must match the regular
-  // expression: `[a-zA-Z\\d-_]+`. The maximum length is 100
+  // expression: `[a-zA-Z\\d-]+`. The maximum length is 100
   // characters. Can be empty to allow the system to generate one.
   string stored_info_type_id = 3;
 }
@@ -3194,6 +2947,84 @@ message DeleteStoredInfoTypeRequest {
   // example `organizations/433245324/storedInfoTypes/432452342` or
   // projects/project-id/storedInfoTypes/432452342.
   string name = 1;
+}
+
+// Options describing which parts of the provided content should be scanned.
+enum ContentOption {
+  // Includes entire content of a file or a data stream.
+  CONTENT_UNSPECIFIED = 0;
+
+  // Text content within the data, excluding any metadata.
+  CONTENT_TEXT = 1;
+
+  // Images found in the data.
+  CONTENT_IMAGE = 2;
+}
+
+// Type of the match which can be applied to different ways of matching, like
+// Dictionary, regular expression and intersecting with findings of another
+// info type.
+enum MatchingType {
+  // Invalid.
+  MATCHING_TYPE_UNSPECIFIED = 0;
+
+  // Full match.
+  //
+  // - Dictionary: join of Dictionary results matched complete finding quote
+  // - Regex: all regex matches fill a finding quote start to end
+  // - Exclude info type: completely inside affecting info types findings
+  MATCHING_TYPE_FULL_MATCH = 1;
+
+  // Partial match.
+  //
+  // - Dictionary: at least one of the tokens in the finding matches
+  // - Regex: substring of the finding matches
+  // - Exclude info type: intersects with affecting info types findings
+  MATCHING_TYPE_PARTIAL_MATCH = 2;
+
+  // Inverse match.
+  //
+  // - Dictionary: no tokens in the finding match the dictionary
+  // - Regex: finding doesn't match the regex
+  // - Exclude info type: no intersection with affecting info types findings
+  MATCHING_TYPE_INVERSE_MATCH = 3;
+}
+
+// Parts of the APIs which use certain infoTypes.
+enum InfoTypeSupportedBy {
+  ENUM_TYPE_UNSPECIFIED = 0;
+
+  // Supported by the inspect operations.
+  INSPECT = 1;
+
+  // Supported by the risk analysis operations.
+  RISK_ANALYSIS = 2;
+}
+
+// Operators available for comparing the value of fields.
+enum RelationalOperator {
+  RELATIONAL_OPERATOR_UNSPECIFIED = 0;
+
+  // Equal.
+  EQUAL_TO = 1;
+
+  // Not equal to.
+  NOT_EQUAL_TO = 2;
+
+  // Greater than.
+  GREATER_THAN = 3;
+
+  // Less than.
+  LESS_THAN = 4;
+
+  // Greater than or equals.
+  GREATER_THAN_OR_EQUALS = 5;
+
+  // Less than or equals.
+  LESS_THAN_OR_EQUALS = 6;
+
+  // Exists
+  EXISTS = 7;
 }
 
 // An enum to represent the various type of DLP jobs.

@@ -17,7 +17,12 @@ language_settings:
     package_name: Google\Cloud\Devtools\Containeranalysis\V1beta1
   nodejs:
     package_name: containeranalysis.v1beta1
-    domain_layer_location: google-cloud
+# The configuration for the license header to put on generated files.
+license_header:
+  # The file containing the copyright line(s).
+  copyright_file: copyright-google.txt
+  # The file containing the raw license header without any copyright line(s).
+  license_file: license-header-apache-2.0.txt
 # A list of resource collection configurations.
 # Consists of a name_pattern and an entity_name.
 # The name_pattern is a pattern to describe the names of the resources of this
@@ -44,7 +49,7 @@ collection_oneofs:
   - occurrence
 # A list of API interface configurations.
 interfaces:
-# The fully qualified name of the API interface.
+  # The fully qualified name of the API interface.
 - name: google.devtools.containeranalysis.v1beta1.ContainerAnalysisV1Beta1
   # Definition for retryable codes.
   retry_codes_def:
@@ -79,6 +84,10 @@ interfaces:
   #
   #   required_fields - Fields that are always required for a request to be
   #   valid.
+  #
+  #   request_object_method - Turns on or off the generation of a method whose
+  #   sole parameter is a request object. Not all languages will generate this
+  #   method.
   #
   #   resource_name_treatment - An enum that specifies how to treat the resource
   #   name formats defined in the field_name_patterns and
@@ -129,6 +138,7 @@ interfaces:
     - resource
     - policy
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -142,6 +152,7 @@ interfaces:
     required_fields:
     - resource
     resource_name_treatment: STATIC_TYPES
+    request_object_method: false
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -157,6 +168,7 @@ interfaces:
     - resource
     - permissions
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -170,6 +182,7 @@ interfaces:
     required_fields:
     - name
     resource_name_treatment: STATIC_TYPES
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
@@ -184,6 +197,7 @@ interfaces:
     required_fields:
     - parent
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
@@ -206,12 +220,13 @@ interfaces:
     - name
     - scan_config
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
       name: scan_config
     timeout_millis: 30000
-# The fully qualified name of the API interface.
+  # The fully qualified name of the API interface.
 - name: grafeas.v1beta1.GrafeasV1Beta1
   # Definition for retryable codes.
   retry_codes_def:
@@ -246,6 +261,10 @@ interfaces:
   #
   #   required_fields - Fields that are always required for a request to be
   #   valid.
+  #
+  #   request_object_method - Turns on or off the generation of a method whose
+  #   sole parameter is a request object. Not all languages will generate this
+  #   method.
   #
   #   resource_name_treatment - An enum that specifies how to treat the resource
   #   name formats defined in the field_name_patterns and
@@ -294,6 +313,7 @@ interfaces:
     required_fields:
     - name
     resource_name_treatment: STATIC_TYPES
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
@@ -308,6 +328,7 @@ interfaces:
     required_fields:
     - parent
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
@@ -328,6 +349,7 @@ interfaces:
     required_fields:
     - name
     resource_name_treatment: STATIC_TYPES
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
@@ -343,6 +365,7 @@ interfaces:
     - parent
     - occurrence
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -358,6 +381,7 @@ interfaces:
     - parent
     - occurrences
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -374,6 +398,7 @@ interfaces:
     - name
     - occurrence
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -387,6 +412,7 @@ interfaces:
     required_fields:
     - name
     resource_name_treatment: STATIC_TYPES
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
@@ -400,6 +426,7 @@ interfaces:
     required_fields:
     - name
     resource_name_treatment: STATIC_TYPES
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
@@ -414,6 +441,7 @@ interfaces:
     required_fields:
     - parent
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
@@ -434,6 +462,7 @@ interfaces:
     required_fields:
     - name
     resource_name_treatment: STATIC_TYPES
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
@@ -451,6 +480,7 @@ interfaces:
     - note_id
     - note
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -466,6 +496,7 @@ interfaces:
     - parent
     - notes
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -482,6 +513,7 @@ interfaces:
     - name
     - note
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -496,6 +528,7 @@ interfaces:
     required_fields:
     - name
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
@@ -517,6 +550,7 @@ interfaces:
     required_fields:
     - parent
     resource_name_treatment: STATIC_TYPES
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:

@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC.
+// Copyright 2018 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ option go_package = "google.golang.org/genproto/googleapis/devtools/resultstore/
 option java_multiple_files = true;
 option java_package = "com.google.devtools.resultstore.v2";
 
+
 // Each ConfiguredTarget represents data for a given configuration of a given
 // target in a given Invocation.
 // Every ConfiguredTarget should have at least one Action as a child resource
@@ -44,7 +45,7 @@ message ConfiguredTarget {
   }
 
   // The resource name.  Its format must be:
-  // invocations/${INVOCATION_ID}/targets/${url_encode(TARGET_ID)}/configuredTargets/${url_encode(CONFIG_ID)}
+  // invocations/${INVOCATION_ID}/targets/${TARGET_ID}/configuredTargets/${CONFIG_ID}
   // where ${CONFIG_ID} must match the ID of an existing Configuration under
   // this Invocation.
   string name = 1;

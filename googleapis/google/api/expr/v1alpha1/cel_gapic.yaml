@@ -16,6 +16,12 @@ language_settings:
     package_name: Google\Cloud\Api\Expr\V1alpha1
   nodejs:
     package_name: expr.v1alpha1
+# The configuration for the license header to put on generated files.
+license_header:
+  # The file containing the copyright line(s).
+  copyright_file: copyright-google.txt
+  # The file containing the raw license header without any copyright line(s).
+  license_file: license-header-apache-2.0.txt
 # A list of API interface configurations.
 interfaces:
   # The fully qualified name of the API interface.
@@ -65,6 +71,10 @@ interfaces:
   #   required_fields - Fields that are always required for a request to be
   #   valid.
   #
+  #   request_object_method - Turns on or off the generation of a method whose
+  #   sole parameter is a request object. Not all languages will generate this
+  #   method.
+  #
   #   resource_name_treatment - An enum that specifies how to treat the resource
   #   name formats defined in the field_name_patterns and
   #   response_field_name_patterns fields.
@@ -111,6 +121,7 @@ interfaces:
         - cel_source
     required_fields:
     - cel_source
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -121,6 +132,7 @@ interfaces:
         - parsed_expr
     required_fields:
     - parsed_expr
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -129,6 +141,7 @@ interfaces:
       groups:
       - parameters:
     required_fields:
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -179,6 +192,10 @@ interfaces:
   #   required_fields - Fields that are always required for a request to be
   #   valid.
   #
+  #   request_object_method - Turns on or off the generation of a method whose
+  #   sole parameter is a request object. Not all languages will generate this
+  #   method.
+  #
   #   resource_name_treatment - An enum that specifies how to treat the resource
   #   name formats defined in the field_name_patterns and
   #   response_field_name_patterns fields.
@@ -225,6 +242,7 @@ interfaces:
         - cel_source
     required_fields:
     - cel_source
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -235,6 +253,7 @@ interfaces:
         - parsed_expr
     required_fields:
     - parsed_expr
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -243,6 +262,7 @@ interfaces:
       groups:
       - parameters:
     required_fields:
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000

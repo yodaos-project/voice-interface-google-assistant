@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC.
+// Copyright 2018 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import "google/devtools/resultstore/v2/file.proto";
 option go_package = "google.golang.org/genproto/googleapis/devtools/resultstore/v2;resultstore";
 option java_multiple_files = true;
 option java_package = "com.google.devtools.resultstore.v2";
+
 
 // The result of running a test suite, as reported in a <testsuite> element of
 // an XML log.

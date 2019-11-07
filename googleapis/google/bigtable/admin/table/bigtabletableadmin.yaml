@@ -1,5 +1,5 @@
 type: google.api.Service
-config_version: 1
+config_version: 0
 name: bigtabletableadmin.googleapis.com
 title: Google Cloud Bigtable Table Admin API
 

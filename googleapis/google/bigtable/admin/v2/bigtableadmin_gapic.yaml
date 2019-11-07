@@ -19,6 +19,9 @@ language_settings:
     package_name: Google\Cloud\Bigtable\Admin\V2
   nodejs:
     package_name: admin.v2
+license_header:
+  copyright_file: copyright-google.txt
+  license_file: license-header-apache-2.0.txt
 interfaces:
 - name: google.bigtable.admin.v2.BigtableInstanceAdmin
   collections:
@@ -41,32 +44,17 @@ interfaces:
     - UNAVAILABLE
     - DEADLINE_EXCEEDED
   - name: non_idempotent
-    retry_codes: []
+    retry_codes:
+    - UNAVAILABLE
   retry_params_def:
-  - name: idempotent_params
-    initial_retry_delay_millis: 1000
+  - name: default
+    initial_retry_delay_millis: 5
     retry_delay_multiplier: 2
     max_retry_delay_millis: 60000
     initial_rpc_timeout_millis: 60000
     rpc_timeout_multiplier: 1
     max_rpc_timeout_millis: 60000
     total_timeout_millis: 600000
-  - name: non_idempotent_params
-    initial_retry_delay_millis: 0
-    retry_delay_multiplier: 1
-    max_retry_delay_millis: 0
-    initial_rpc_timeout_millis: 60000
-    rpc_timeout_multiplier: 1
-    max_rpc_timeout_millis: 60000
-    total_timeout_millis: 60000
-  - name: non_idempotent_heavy_params
-    initial_retry_delay_millis: 0
-    retry_delay_multiplier: 1
-    max_retry_delay_millis: 0
-    initial_rpc_timeout_millis: 300000
-    rpc_timeout_multiplier: 1
-    max_rpc_timeout_millis: 300000
-    total_timeout_millis: 300000
   methods:
   - name: CreateInstance
     flattening:
@@ -81,19 +69,20 @@ interfaces:
     - instance_id
     - instance
     - clusters
+    request_object_method: true
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_heavy_params
+    retry_params_name: default
     field_name_patterns:
       parent: project
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 300000
+    timeout_millis: 60000
     long_running:
       return_type: google.bigtable.admin.v2.Instance
       metadata_type: google.bigtable.admin.v2.CreateInstanceMetadata
       initial_poll_delay_millis: 500
       poll_delay_multiplier: 1.5
       max_poll_delay_millis: 5000
-      total_poll_timeout_millis: 600000
+      total_poll_timeout_millis: 300000
     header_request_params:
     - parent
   - name: GetInstance
@@ -103,12 +92,13 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: instance
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - name
   - name: ListInstances
@@ -118,12 +108,13 @@ interfaces:
         - parent
     required_fields:
     - parent
+    request_object_method: true
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       parent: project
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - parent
   - name: UpdateInstance
@@ -132,15 +123,16 @@ interfaces:
     - display_name
     - type
     - labels
+    request_object_method: true
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: instance
     resource_name_treatment: STATIC_TYPES
     timeout_millis: 60000
     # Should use PartialUpdateInstance instead
     surface_treatments:
-    - include_languages: [java, csharp]
+    - include_languages: [ java, csharp ]
       visibility: DISABLED
     header_request_params:
     - name
@@ -153,8 +145,9 @@ interfaces:
     required_fields:
     - instance
     - update_mask
+    request_object_method: true
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       instance.name: instance
     resource_name_treatment: STATIC_TYPES
@@ -165,7 +158,7 @@ interfaces:
       initial_poll_delay_millis: 500
       poll_delay_multiplier: 1.5
       max_poll_delay_millis: 5000
-      total_poll_timeout_millis: 600000
+      total_poll_timeout_millis: 300000
     header_request_params:
     - instance.name
   - name: DeleteInstance
@@ -175,12 +168,13 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: instance
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 150000
     header_request_params:
     - name
   - name: CreateCluster
@@ -194,18 +188,19 @@ interfaces:
     - parent
     - cluster_id
     - cluster
+    request_object_method: true
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
+    retry_params_name: default
     field_name_patterns:
       parent: instance
     resource_name_treatment: STATIC_TYPES
     long_running:
       return_type: google.bigtable.admin.v2.Cluster
       metadata_type: google.bigtable.admin.v2.CreateClusterMetadata
-      initial_poll_delay_millis: 5000
+      initial_poll_delay_millis: 500
       poll_delay_multiplier: 1.5
-      max_poll_delay_millis: 60000
-      total_poll_timeout_millis: 21600000
+      max_poll_delay_millis: 5000
+      total_poll_timeout_millis: 300000
     timeout_millis: 60000
     header_request_params:
     - parent
@@ -216,12 +211,13 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: cluster
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - name
   - name: ListClusters
@@ -231,20 +227,22 @@ interfaces:
         - parent
     required_fields:
     - parent
+    request_object_method: true
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       parent: instance
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - parent
   - name: UpdateCluster
     required_fields:
     - name
     - serve_nodes
+    request_object_method: true
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: cluster
     resource_name_treatment: STATIC_TYPES
@@ -254,7 +252,7 @@ interfaces:
       initial_poll_delay_millis: 500
       poll_delay_multiplier: 1.5
       max_poll_delay_millis: 5000
-      total_poll_timeout_millis: 600000
+      total_poll_timeout_millis: 300000
     timeout_millis: 60000
     header_request_params:
     - name
@@ -265,12 +263,13 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: cluster
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - name
   - name: CreateAppProfile
@@ -284,12 +283,13 @@ interfaces:
     - parent
     - app_profile_id
     - app_profile
+    request_object_method: true
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
+    retry_params_name: default
     field_name_patterns:
       parent: instance
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - parent
   - name: GetAppProfile
@@ -299,12 +299,13 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: app_profile
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - name
   - name: ListAppProfiles
@@ -314,6 +315,7 @@ interfaces:
         - parent
     required_fields:
     - parent
+    request_object_method: true
     page_streaming:
       request:
         token_field: page_token
@@ -321,11 +323,11 @@ interfaces:
         token_field: next_page_token
         resources_field: app_profiles
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       parent: instance
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - parent
   - name: UpdateAppProfile
@@ -337,19 +339,20 @@ interfaces:
     required_fields:
     - app_profile
     - update_mask
+    request_object_method: true
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       app_profile.name: app_profile
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     long_running:
       return_type: google.bigtable.admin.v2.AppProfile
       metadata_type: google.bigtable.admin.v2.UpdateAppProfileMetadata
-      initial_poll_delay_millis: 500
+      initial_poll_delay_millis: 5
       poll_delay_multiplier: 1.5
       max_poll_delay_millis: 5000
-      total_poll_timeout_millis: 600000
+      total_poll_timeout_millis: 300000
     header_request_params:
     - app_profile.name
   - name: DeleteAppProfile
@@ -360,12 +363,13 @@ interfaces:
     required_fields:
     - name
     - ignore_warnings
+    request_object_method: true
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: app_profile
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - name
   - name: GetIamPolicy
@@ -375,11 +379,12 @@ interfaces:
         - resource
     required_fields:
     - resource
+    request_object_method: false
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       resource: instance
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - resource
   - name: SetIamPolicy
@@ -391,11 +396,12 @@ interfaces:
     required_fields:
     - resource
     - policy
+    request_object_method: true
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
+    retry_params_name: default
     field_name_patterns:
       resource: instance
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - resource
   - name: TestIamPermissions
@@ -407,11 +413,12 @@ interfaces:
     required_fields:
     - resource
     - permissions
+    request_object_method: true
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       resource: instance
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - resource
 - name: google.bigtable.admin.v2.BigtableTableAdmin
@@ -435,39 +442,14 @@ interfaces:
   - name: non_idempotent
     retry_codes: []
   retry_params_def:
-  - name: idempotent_params
-    initial_retry_delay_millis: 1000
-    retry_delay_multiplier: 2
+  - name: default
+    initial_retry_delay_millis: 100
+    retry_delay_multiplier: 1.3
     max_retry_delay_millis: 60000
-    initial_rpc_timeout_millis: 60000
+    initial_rpc_timeout_millis: 20000
     rpc_timeout_multiplier: 1
-    max_rpc_timeout_millis: 60000
+    max_rpc_timeout_millis: 20000
     total_timeout_millis: 600000
-  - name: non_idempotent_params
-    initial_retry_delay_millis: 0
-    retry_delay_multiplier: 1
-    max_retry_delay_millis: 0
-    initial_rpc_timeout_millis: 60000
-    rpc_timeout_multiplier: 1
-    max_rpc_timeout_millis: 60000
-    total_timeout_millis: 60000
-  - name: non_idempotent_heavy_params
-    initial_retry_delay_millis: 0
-    retry_delay_multiplier: 1
-    max_retry_delay_millis: 0
-    initial_rpc_timeout_millis: 300000
-    rpc_timeout_multiplier: 1
-    max_rpc_timeout_millis: 300000
-    total_timeout_millis: 300000
-  - name: drop_row_range_params
-    initial_retry_delay_millis: 0
-    retry_delay_multiplier: 1
-    max_retry_delay_millis: 0
-    initial_rpc_timeout_millis: 3600000
-    rpc_timeout_multiplier: 1
-    max_rpc_timeout_millis: 3600000
-    total_timeout_millis: 3600000
-
   methods:
   - name: CreateTable
     flattening:
@@ -480,12 +462,13 @@ interfaces:
     - parent
     - table_id
     - table
+    request_object_method: true
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_heavy_params
+    retry_params_name: default
     field_name_patterns:
       parent: instance
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 300000
+    timeout_millis: 900000
     header_request_params:
     - parent
   - name: CreateTableFromSnapshot
@@ -499,23 +482,20 @@ interfaces:
     - parent
     - table_id
     - source_snapshot
+    request_object_method: true
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
+    retry_params_name: default
     field_name_patterns:
       parent: instance
     resource_name_treatment: STATIC_TYPES
     long_running:
       return_type: google.bigtable.admin.v2.Table
       metadata_type: google.bigtable.admin.v2.CreateTableFromSnapshotMetadata
-      initial_poll_delay_millis: 5000
+      initial_poll_delay_millis: 500
       poll_delay_multiplier: 1.5
-      max_poll_delay_millis: 60000
-      total_poll_timeout_millis: 3600000
+      max_poll_delay_millis: 5000
+      total_poll_timeout_millis: 300000
     timeout_millis: 60000
-    # Snapshots are Alpha-only and not supported in C#
-    surface_treatments:
-    - include_languages: [csharp]
-      visibility: DISABLED
     header_request_params:
     - parent
   - name: ListTables
@@ -525,6 +505,7 @@ interfaces:
         - parent
     required_fields:
     - parent
+    request_object_method: true
     page_streaming:
       request:
         token_field: page_token
@@ -532,11 +513,11 @@ interfaces:
         token_field: next_page_token
         resources_field: tables
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       parent: instance
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - parent
   - name: GetTable
@@ -546,12 +527,13 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: true
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: table
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - name
   - name: DeleteTable
@@ -561,12 +543,13 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: table
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 120000
     header_request_params:
     - name
   - name: ModifyColumnFamilies
@@ -578,23 +561,25 @@ interfaces:
     required_fields:
     - name
     - modifications
+    request_object_method: true
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_heavy_params
+    retry_params_name: default
     field_name_patterns:
       name: table
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 300000
+    timeout_millis: 900000
     header_request_params:
     - name
   - name: DropRowRange
     required_fields:
     - name
+    request_object_method: true
     retry_codes_name: non_idempotent
-    retry_params_name: drop_row_range_params
+    retry_params_name: default
     field_name_patterns:
       name: table
     resource_name_treatment: STATIC_TYPES
-    timeout_millis: 60000
+    timeout_millis: 900000
     header_request_params:
     - name
   - name: GenerateConsistencyToken
@@ -604,8 +589,9 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: table
     resource_name_treatment: STATIC_TYPES
@@ -621,60 +607,15 @@ interfaces:
     required_fields:
     - name
     - consistency_token
+    request_object_method: true
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: table
     resource_name_treatment: STATIC_TYPES
     timeout_millis: 60000
     header_request_params:
     - name
-  - name: GetIamPolicy
-    flattening:
-      groups:
-      - parameters:
-        - resource
-    required_fields:
-    - resource
-    retry_codes_name: idempotent
-    retry_params_name: idempotent_params
-    field_name_patterns:
-      resource: table
-    timeout_millis: 60000
-    header_request_params:
-    - resource
-  - name: SetIamPolicy
-    flattening:
-      groups:
-      - parameters:
-        - resource
-        - policy
-    required_fields:
-    - resource
-    - policy
-    retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
-    field_name_patterns:
-      resource: table
-    timeout_millis: 60000
-    header_request_params:
-    - resource
-  - name: TestIamPermissions
-    flattening:
-      groups:
-      - parameters:
-        - resource
-        - permissions
-    required_fields:
-    - resource
-    - permissions
-    retry_codes_name: idempotent
-    retry_params_name: idempotent_params
-    field_name_patterns:
-      resource: table
-    timeout_millis: 60000
-    header_request_params:
-    - resource
   - name: SnapshotTable
     flattening:
       groups:
@@ -688,8 +629,9 @@ interfaces:
     - cluster
     - snapshot_id
     - description
+    request_object_method: true
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: table
     resource_name_treatment: STATIC_TYPES
@@ -700,11 +642,7 @@ interfaces:
       initial_poll_delay_millis: 500
       poll_delay_multiplier: 1.5
       max_poll_delay_millis: 5000
-      total_poll_timeout_millis: 600000
-    # Snapshots are Alpha-only and not supported in C#
-    surface_treatments:
-    - include_languages: [csharp]
-      visibility: DISABLED
+      total_poll_timeout_millis: 300000
     header_request_params:
     - name
   - name: GetSnapshot
@@ -714,16 +652,13 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: snapshot
     resource_name_treatment: STATIC_TYPES
     timeout_millis: 60000
-    # Snapshots are Alpha-only and not supported in C#
-    surface_treatments:
-    - include_languages: [csharp]
-      visibility: DISABLED
     header_request_params:
     - name
   - name: ListSnapshots
@@ -733,6 +668,7 @@ interfaces:
         - parent
     required_fields:
     - parent
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
@@ -741,15 +677,11 @@ interfaces:
         token_field: next_page_token
         resources_field: snapshots
     retry_codes_name: idempotent
-    retry_params_name: idempotent_params
+    retry_params_name: default
     field_name_patterns:
       parent: cluster
     resource_name_treatment: STATIC_TYPES
     timeout_millis: 60000
-    # Snapshots are Alpha-only and not supported in C#
-    surface_treatments:
-    - include_languages: [csharp]
-      visibility: DISABLED
     header_request_params:
     - parent
   - name: DeleteSnapshot
@@ -759,16 +691,13 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: non_idempotent
-    retry_params_name: non_idempotent_params
+    retry_params_name: default
     field_name_patterns:
       name: snapshot
     resource_name_treatment: STATIC_TYPES
     timeout_millis: 60000
-    # Snapshots are Alpha-only and not supported in C#
-    surface_treatments:
-    - include_languages: [csharp]
-      visibility: DISABLED
     header_request_params:
     - name
 

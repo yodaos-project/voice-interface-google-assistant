@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC.
+// Copyright 2018 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 
 syntax = "proto3";
 
@@ -21,7 +20,6 @@ import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/struct.proto";
-import "google/api/client.proto";
 
 option cc_enable_arenas = true;
 option csharp_namespace = "Google.Cloud.Dialogflow.V2beta1";
@@ -30,6 +28,7 @@ option java_multiple_files = true;
 option java_outer_classname = "ContextProto";
 option java_package = "com.google.cloud.dialogflow.v2beta1";
 option objc_class_prefix = "DF";
+
 
 // A context represents additional information included with user input or with
 // an intent returned by the Dialogflow API. Contexts are helpful for
@@ -43,30 +42,18 @@ option objc_class_prefix = "DF";
 // [StreamingDetectIntent][google.cloud.dialogflow.v2beta1.Sessions.StreamingDetectIntent]) request,
 // or as output contexts included in the returned intent.
 // Contexts expire when an intent is matched, after the number of `DetectIntent`
-// requests specified by the `lifespan_count` parameter, or after 20 minutes
+// requests specified by the `lifespan_count` parameter, or after 10 minutes
 // if no intents are matched for a `DetectIntent` request.
 //
 // For more information about contexts, see the
-// [Dialogflow
-// documentation](https://cloud.google.com/dialogflow/docs/contexts-overview).
+// [Dialogflow documentation](https://dialogflow.com/docs/contexts).
 service Contexts {
-  option (google.api.default_host) = "dialogflow.googleapis.com";
-  option (google.api.oauth_scopes) =
-      "https://www.googleapis.com/auth/cloud-platform,"
-      "https://www.googleapis.com/auth/dialogflow";
-
   // Returns the list of all contexts in the specified session.
   rpc ListContexts(ListContextsRequest) returns (ListContextsResponse) {
     option (google.api.http) = {
       get: "/v2beta1/{parent=projects/*/agent/sessions/*}/contexts"
       additional_bindings {
         get: "/v2beta1/{parent=projects/*/agent/environments/*/users/*/sessions/*}/contexts"
-      }
-      additional_bindings {
-        get: "/v2beta1/{parent=projects/*/locations/*/agent/sessions/*}/contexts"
-      }
-      additional_bindings {
-        get: "/v2beta1/{parent=projects/*/locations/*/agent/environments/*/users/*/sessions/*}/contexts"
       }
     };
   }
@@ -78,32 +65,16 @@ service Contexts {
       additional_bindings {
         get: "/v2beta1/{name=projects/*/agent/environments/*/users/*/sessions/*/contexts/*}"
       }
-      additional_bindings {
-        get: "/v2beta1/{name=projects/*/locations/*/agent/sessions/*/contexts/*}"
-      }
-      additional_bindings {
-        get: "/v2beta1/{name=projects/*/locations/*/agent/environments/*/users/*/sessions/*/contexts/*}"
-      }
     };
   }
 
   // Creates a context.
-  //
-  // If the specified context already exists, overrides the context.
   rpc CreateContext(CreateContextRequest) returns (Context) {
     option (google.api.http) = {
       post: "/v2beta1/{parent=projects/*/agent/sessions/*}/contexts"
       body: "context"
       additional_bindings {
         post: "/v2beta1/{parent=projects/*/agent/environments/*/users/*/sessions/*}/contexts"
-        body: "context"
-      }
-      additional_bindings {
-        post: "/v2beta1/{parent=projects/*/locations/*/agent/sessions/*}/contexts"
-        body: "context"
-      }
-      additional_bindings {
-        post: "/v2beta1/{parent=projects/*/locations/*/agent/environments/*/users/*/sessions/*}/contexts"
         body: "context"
       }
     };
@@ -118,14 +89,6 @@ service Contexts {
         patch: "/v2beta1/{context.name=projects/*/agent/environments/*/users/*/sessions/*/contexts/*}"
         body: "context"
       }
-      additional_bindings {
-        patch: "/v2beta1/{context.name=projects/*/locations/*/agent/sessions/*/contexts/*}"
-        body: "context"
-      }
-      additional_bindings {
-        patch: "/v2beta1/{context.name=projects/*/locations/*/agent/environments/*/users/*/sessions/*/contexts/*}"
-        body: "context"
-      }
     };
   }
 
@@ -135,12 +98,6 @@ service Contexts {
       delete: "/v2beta1/{name=projects/*/agent/sessions/*/contexts/*}"
       additional_bindings {
         delete: "/v2beta1/{name=projects/*/agent/environments/*/users/*/sessions/*/contexts/*}"
-      }
-      additional_bindings {
-        delete: "/v2beta1/{name=projects/*/locations/*/agent/sessions/*/contexts/*}"
-      }
-      additional_bindings {
-        delete: "/v2beta1/{name=projects/*/locations/*/agent/environments/*/users/*/sessions/*/contexts/*}"
       }
     };
   }
@@ -152,12 +109,6 @@ service Contexts {
       additional_bindings {
         delete: "/v2beta1/{parent=projects/*/agent/environments/*/users/*/sessions/*}/contexts"
       }
-      additional_bindings {
-        delete: "/v2beta1/{parent=projects/*/locations/*/agent/sessions/*}/contexts"
-      }
-      additional_bindings {
-        delete: "/v2beta1/{parent=projects/*/locations/*/agent/environments/*/users/*/sessions/*}/contexts"
-      }
     };
   }
 }
@@ -167,25 +118,21 @@ message Context {
   // Required. The unique identifier of the context. Format:
   // `projects/<Project ID>/agent/sessions/<Session ID>/contexts/<Context ID>`,
   // or `projects/<Project ID>/agent/environments/<Environment ID>/users/<User
-  // ID>/sessions/<Session ID>/contexts/<Context ID>`.
-  //
-  // The `Context ID` is always converted to lowercase, may only contain
-  // characters in a-zA-Z0-9_-% and may be at most 250 bytes long.
-  //
-  // If `Environment ID` is not specified, we assume default 'draft'
-  // environment. If `User ID` is not specified, we assume default '-' user.
+  // ID>/sessions/<Session ID>/contexts/<Context ID>`. The `Context ID` is
+  // always converted to lowercase. If `Environment ID` is not specified, we
+  // assume default 'draft' environment. If `User ID` is not specified, we
+  // assume default '-' user.
   string name = 1;
 
   // Optional. The number of conversational query requests after which the
   // context expires. If set to `0` (the default) the context expires
-  // immediately. Contexts expire automatically after 20 minutes if there
+  // immediately. Contexts expire automatically after 10 minutes even if there
   // are no matching queries.
   int32 lifespan_count = 2;
 
   // Optional. The collection of parameters associated with this context.
-  // Refer to [this
-  // doc](https://cloud.google.com/dialogflow/docs/intents-actions-parameters)
-  // for syntax.
+  // Refer to [this doc](https://dialogflow.com/docs/actions-and-parameters) for
+  // syntax.
   google.protobuf.Struct parameters = 3;
 }
 

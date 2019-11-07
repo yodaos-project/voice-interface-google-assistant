@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC.
+// Copyright 2018 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
-import "google/api/client.proto";
 
 option csharp_namespace = "Google.Cloud.Monitoring.V3";
 option go_package = "google.golang.org/genproto/googleapis/monitoring/v3;monitoring";
@@ -32,15 +31,10 @@ option java_outer_classname = "NotificationServiceProto";
 option java_package = "com.google.monitoring.v3";
 option php_namespace = "Google\\Cloud\\Monitoring\\V3";
 
+
 // The Notification Channel API provides access to configuration that
 // controls how messages related to incidents are sent.
 service NotificationChannelService {
-  option (google.api.default_host) = "monitoring.googleapis.com";
-  option (google.api.oauth_scopes) =
-      "https://www.googleapis.com/auth/cloud-platform,"
-      "https://www.googleapis.com/auth/monitoring,"
-      "https://www.googleapis.com/auth/monitoring.read";
-
   // Lists the descriptors for supported channel types. The use of descriptors
   // makes it possible for new channel types to be dynamically added.
   rpc ListNotificationChannelDescriptors(ListNotificationChannelDescriptorsRequest) returns (ListNotificationChannelDescriptorsResponse) {
@@ -215,8 +209,7 @@ message ListNotificationChannelsRequest {
   // in which to look for the notification channels; it does not name a
   // specific channel. To query a specific channel by REST resource name, use
   // the
-  // [`GetNotificationChannel`][google.monitoring.v3.NotificationChannelService.GetNotificationChannel]
-  // operation.
+  // [`GetNotificationChannel`][google.monitoring.v3.NotificationChannelService.GetNotificationChannel] operation.
   string name = 5;
 
   // If provided, this field specifies the criteria that must be met by

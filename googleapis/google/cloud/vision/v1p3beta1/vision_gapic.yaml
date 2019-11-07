@@ -17,6 +17,9 @@ language_settings:
   nodejs:
     package_name: vision.v1p3beta1
     domain_layer_location: google-cloud
+license_header:
+  copyright_file: copyright-google.txt
+  license_file: license-header-apache-2.0.txt
 interfaces:
 - name: google.cloud.vision.v1p3beta1.ProductSearch
   collections:
@@ -56,6 +59,7 @@ interfaces:
     - parent
     - product_set
     - product_set_id
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -69,6 +73,7 @@ interfaces:
         - parent
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
       request:
@@ -89,6 +94,7 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -104,6 +110,7 @@ interfaces:
     required_fields:
     - product_set
     - update_mask
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -117,6 +124,7 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -134,6 +142,7 @@ interfaces:
     - parent
     - product
     - product_id
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -147,6 +156,7 @@ interfaces:
         - parent
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
       request:
@@ -167,6 +177,7 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -182,6 +193,7 @@ interfaces:
     required_fields:
     - product
     - update_mask
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -195,6 +207,7 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -212,6 +225,7 @@ interfaces:
     - parent
     - reference_image
     - reference_image_id
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -225,6 +239,7 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -238,6 +253,7 @@ interfaces:
         - parent
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
       request:
@@ -258,6 +274,7 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -273,6 +290,7 @@ interfaces:
     required_fields:
     - name
     - product
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -288,6 +306,7 @@ interfaces:
     required_fields:
     - name
     - product
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -301,6 +320,7 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
       request:
@@ -330,6 +350,7 @@ interfaces:
       poll_delay_multiplier: 1.5
       max_poll_delay_millis: 45000
       total_poll_timeout_millis: 86400000
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -340,7 +361,7 @@ interfaces:
   smoke_test:
     method: BatchAnnotateImages
     init_fields:
-    - requests[0].image.source.gcs_image_uri="gs://cloud-samples-data/vision/face_detection/celebrity_recognition/sergey.jpg"
+    - requests[0].image.source.gcs_image_uri="gs://gapic-toolkit/President_Barack_Obama.jpg"
     - requests[0].features[0].type=FACE_DETECTION
   collections: []
   retry_codes_def:
@@ -367,6 +388,7 @@ interfaces:
         - requests
     required_fields:
     - requests
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -384,6 +406,7 @@ interfaces:
       poll_delay_multiplier: 1.5
       max_poll_delay_millis: 45000
       total_poll_timeout_millis: 86400000
+    request_object_method: false
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 60000

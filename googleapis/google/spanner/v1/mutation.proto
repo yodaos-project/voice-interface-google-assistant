@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC.
+// Copyright 2018 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,15 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 
 syntax = "proto3";
 
 package google.spanner.v1;
 
+import "google/api/annotations.proto";
 import "google/protobuf/struct.proto";
 import "google/spanner/v1/keys.proto";
-import "google/api/annotations.proto";
 
 option csharp_namespace = "Google.Cloud.Spanner.V1";
 option go_package = "google.golang.org/genproto/googleapis/spanner/v1;spanner";
@@ -27,6 +26,7 @@ option java_multiple_files = true;
 option java_outer_classname = "MutationProto";
 option java_package = "com.google.spanner.v1";
 option php_namespace = "Google\\Cloud\\Spanner\\V1";
+
 
 // A modification to one or more Cloud Spanner rows.  Mutations can be
 // applied to a Cloud Spanner database by sending them in a
@@ -86,11 +86,6 @@ message Mutation {
     // deleted, and the column values provided are inserted
     // instead. Unlike [insert_or_update][google.spanner.v1.Mutation.insert_or_update], this means any values not
     // explicitly written become `NULL`.
-    //
-    // In an interleaved table, if you create the child table with the
-    // `ON DELETE CASCADE` annotation, then replacing a parent row
-    // also deletes the child rows. Otherwise, you must delete the
-    // child rows before you replace the parent row.
     Write replace = 4;
 
     // Delete rows from a table. Succeeds whether or not the named

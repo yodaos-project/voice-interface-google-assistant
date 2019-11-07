@@ -17,6 +17,9 @@ language_settings:
   nodejs:
     package_name: dlp.v2
     domain_layer_location: google-cloud
+license_header:
+  copyright_file: copyright-google.txt
+  license_file: license-header-apache-2.0.txt
 collection_oneofs:
 - oneof_name: deidentify_template_oneof
   collection_names:
@@ -104,6 +107,10 @@ interfaces:
   #   required_fields - Fields that are always required for a request to be
   #   valid.
   #
+  #   request_object_method - Turns on or off the generation of a method whose
+  #   sole parameter is a request object. Not all languages will generate this
+  #   method.
+  #
   #   resource_name_treatment - An enum that specifies how to treat the resource
   #   name formats defined in the field_name_patterns and
   #   response_field_name_patterns fields.
@@ -146,6 +153,7 @@ interfaces:
   - name: InspectContent
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -155,6 +163,7 @@ interfaces:
   - name: RedactImage
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -164,6 +173,7 @@ interfaces:
   - name: DeidentifyContent
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -173,6 +183,7 @@ interfaces:
   - name: ReidentifyContent
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -180,12 +191,14 @@ interfaces:
       parent: project
     timeout_millis: 300000
   - name: ListInfoTypes
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 300000
   - name: CreateInspectTemplate
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -195,6 +208,7 @@ interfaces:
   - name: UpdateInspectTemplate
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -202,6 +216,7 @@ interfaces:
       name: inspect_template_oneof
     timeout_millis: 300000
   - name: GetInspectTemplate
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -211,6 +226,7 @@ interfaces:
   - name: ListInspectTemplates
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
       request:
@@ -227,6 +243,7 @@ interfaces:
   - name: DeleteInspectTemplate
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -236,6 +253,7 @@ interfaces:
   - name: CreateDeidentifyTemplate
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -245,6 +263,7 @@ interfaces:
   - name: UpdateDeidentifyTemplate
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -254,6 +273,7 @@ interfaces:
   - name: GetDeidentifyTemplate
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -263,6 +283,7 @@ interfaces:
   - name: ListDeidentifyTemplates
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
       request:
@@ -279,6 +300,7 @@ interfaces:
   - name: DeleteDeidentifyTemplate
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -288,6 +310,7 @@ interfaces:
   - name: CreateDlpJob
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -297,6 +320,7 @@ interfaces:
   - name: ListDlpJobs
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
       request:
@@ -313,6 +337,7 @@ interfaces:
   - name: GetDlpJob
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -322,6 +347,7 @@ interfaces:
   - name: DeleteDlpJob
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -331,6 +357,7 @@ interfaces:
   - name: CancelDlpJob
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -340,6 +367,7 @@ interfaces:
   - name: ListJobTriggers
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
       request:
@@ -356,6 +384,7 @@ interfaces:
   - name: GetJobTrigger
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -365,24 +394,15 @@ interfaces:
   - name: DeleteJobTrigger
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 300000
-  - name: ActivateJobTrigger
-    surface_treatments:
-    - include_languages:
-      - go
-      - java
-      - csharp
-      - ruby
-      - nodejs
-      - python
-      - php
-      visibility: DISABLED
   - name: UpdateJobTrigger
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -392,6 +412,7 @@ interfaces:
   - name: CreateJobTrigger
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -402,6 +423,7 @@ interfaces:
   - name: CreateStoredInfoType
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -411,6 +433,7 @@ interfaces:
   - name: UpdateStoredInfoType
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
@@ -420,6 +443,7 @@ interfaces:
   - name: GetStoredInfoType
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
@@ -429,6 +453,7 @@ interfaces:
   - name: ListStoredInfoTypes
     required_fields:
     - parent
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
       request:
@@ -445,6 +470,7 @@ interfaces:
   - name: DeleteStoredInfoType
     required_fields:
     - name
+    request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default

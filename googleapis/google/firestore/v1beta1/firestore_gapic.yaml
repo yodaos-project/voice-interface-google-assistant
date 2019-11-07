@@ -13,12 +13,14 @@ language_settings:
     package_name: Google.Cloud.Firestore.V1Beta1
   ruby:
     package_name: Google::Cloud::Firestore::V1beta1
-    release_level: GA
+    release_level: BETA
   php:
     package_name: Google\Cloud\Firestore\V1beta1
   nodejs:
     package_name: firestore.v1beta1
-    domain_layer_location: google-cloud
+license_header:
+  copyright_file: copyright-google.txt
+  license_file: license-header-apache-2.0.txt
 interfaces:
 - name: google.firestore.v1beta1.Firestore
   collections:
@@ -59,16 +61,17 @@ interfaces:
   - name: GetDocument
     required_fields:
     - name
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
       name: any_path
     timeout_millis: 60000
-    resource_name_treatment: STATIC_TYPES
   - name: ListDocuments
     required_fields:
     - parent
     - collection_id
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
@@ -88,6 +91,7 @@ interfaces:
     - collection_id
     - document_id
     - document
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -103,6 +107,7 @@ interfaces:
     required_fields:
     - document
     - update_mask
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -115,16 +120,17 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
       name: any_path
     timeout_millis: 60000
-    resource_name_treatment: STATIC_TYPES
   - name: BatchGetDocuments
     required_fields:
     - database
     - documents
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: streaming
     field_name_patterns:
@@ -138,6 +144,7 @@ interfaces:
         - database
     required_fields:
     - database
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
@@ -152,6 +159,7 @@ interfaces:
     required_fields:
     - database
     - writes
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
@@ -166,6 +174,7 @@ interfaces:
     required_fields:
     - database
     - transaction
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
@@ -174,6 +183,7 @@ interfaces:
   - name: RunQuery
     required_fields:
     - parent
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: streaming
     field_name_patterns:
@@ -205,6 +215,7 @@ interfaces:
         - parent
     required_fields:
     - parent
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
@@ -218,10 +229,3 @@ interfaces:
       parent: document_root
       parent: any_path
     timeout_millis: 60000
-resource_name_generation:
-- message_name: GetDocumentRequest
-  field_entity_map:
-    name: any_path
-- message_name: DeleteDocumentRequest
-  field_entity_map:
-    name: any_path

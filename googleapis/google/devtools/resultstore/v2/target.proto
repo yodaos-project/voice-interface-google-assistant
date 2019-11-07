@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC.
+// Copyright 2018 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ option go_package = "google.golang.org/genproto/googleapis/devtools/resultstore/
 option java_multiple_files = true;
 option java_package = "com.google.devtools.resultstore.v2";
 
+
 // Each Target represents data for a given target in a given Invocation.
 // ConfiguredTarget and Action resources under each Target contain the bulk of
 // the data.
@@ -38,7 +39,7 @@ message Target {
   }
 
   // The resource name.  Its format must be:
-  // invocations/${INVOCATION_ID}/targets/${url_encode(TARGET_ID)}
+  // invocations/${INVOCATION_ID}/targets/${TARGET_ID}
   string name = 1;
 
   // The resource ID components that identify the Target. They must match the

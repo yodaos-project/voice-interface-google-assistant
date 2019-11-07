@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC.
+// Copyright 2018 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ syntax = "proto3";
 
 package google.monitoring.v3;
 
+import "google/api/annotations.proto";
 import "google/api/label.proto";
 import "google/monitoring/v3/common.proto";
 import "google/protobuf/wrappers.proto";
@@ -27,6 +28,7 @@ option java_multiple_files = true;
 option java_outer_classname = "NotificationProto";
 option java_package = "com.google.monitoring.v3";
 option php_namespace = "Google\\Cloud\\Monitoring\\V3";
+
 
 // A description of a notification channel. The descriptor includes
 // the properties of the channel and the set of labels or fields that
@@ -111,7 +113,7 @@ message NotificationChannel {
 
   // An optional human-readable description of this notification channel. This
   // description may provide additional details, beyond the display
-  // name, for the channel. This may not exceed 1024 Unicode characters.
+  // name, for the channel. This may not exceeed 1024 Unicode characters.
   string description = 4;
 
   // Configuration fields that define the channel and its behavior. The
